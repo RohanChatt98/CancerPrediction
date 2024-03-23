@@ -1,35 +1,50 @@
-1. Importing Libraries: The code begins by importing necessary libraries such as pandas for data manipulation, numpy for numerical operations, matplotlib.pyplot for plotting graphs, and various modules from scikit-learn for machine learning tasks.
+# Cancer Prediction using Machine Learning
 
-2. Loading Data: The code loads the cancer data from a CSV file named "cancerdata.csv" into a pandas DataFrame named cancerdata.
+## Overview
 
-3. Data Preprocessing & EDA:
+This dataset was obtained from Kaggle, it contains $569$ samples of cell growth data frokm different patients. Every cell growth is classified into the following two classes:
 
-Converting the diagnosis column from 'B' to 'Benign' and from 'M' to 'Malignant'.
-Dropping the 'id' column.
-Printing information about the DataFrame using info() method.
-Describing the DataFrame using describe() method.
-Splitting Data: Splitting the DataFrame into features (cancerdata_X) and target (cancerdata_y).
+1. $B$: Benign
+2. $M$: Malignant
 
-4.Pipeline Creation:
+There are a total of 31 columns in the dataset, among which there is an `id` column which is removed during the preprocessing steps, 29 columns containing the __features__ and `diagnosis` column is the target variable.
 
-Defining numeric and categorical features.
-Creating pipelines for numerical and categorical preprocessing.
-Combining the pipelines using ColumnTransformer to handle different types of features.
-Fitting and transforming the data using fit() and transform() methods.
-Scaling Features: Creating a pipeline to scale the features using MinMaxScaler().
+I have used [TPOT](https://github.com/EpistasisLab/tpot) package instead of [Scikit Learn](https://github.com/scikit-learn/scikit-learn) as the former is a low-code ML training module which uses genetic algorithm to optimize the pipeline.
 
-Splitting Data into Train and Test Sets: Using train_test_split() function from scikit-learn to split the data into training and testing sets.
+## Setting Up the Environment
 
-5. Model Training:
+You need to have `conda` installed on your machine for creation of the environment.
 
-Iterating over different numbers of neighbors for KNN classifier.
-Training KNN classifiers for each number of neighbors.
-Calculating training and testing accuracies and storing them in a list.
-Plotting Accuracy: Plotting the training and testing accuracies against the number of neighbors.
+```bash
+$ conda create -f environment.yaml
+$ conda activate cancer
+```
 
-6. Model Evaluation:
+## TPOT Settings
 
-Training a KNN classifier with a chosen number of neighbors.
-Predicting the target labels for the test data.
-Calculating accuracy using accuracy_score() function.
-Creating a confusion matrix using crosstab() function from pandas.
+the following settings were used:
+```json
+{"generations": 50,
+ "population_size": 50,
+ "scoring": "f1_weighted",
+ "cv": 5,
+ "subsample": 0.5,
+ "n_jobs": -1,
+ "verbosity": 2,
+ "random_state": 1337
+}
+```
+
+## Results
+
+The `sklearn.metrics.classification_report` on the validation dataset gives the following results
+```
+              precision    recall  f1-score   support
+
+           0       0.61      0.70      0.65        69
+           1       0.40      0.31      0.35        45
+
+    accuracy                           0.54       114
+   macro avg       0.50      0.50      0.50       114
+weighted avg       0.53      0.54      0.53       114
+```
