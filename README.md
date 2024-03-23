@@ -13,12 +13,7 @@ I have used [TPOT](https://github.com/EpistasisLab/tpot) package instead of [Sci
 
 ## Setting Up the Environment
 
-You need to have `conda` installed on your machine for creation of the environment.
-
-```bash
-$ conda create -f environment.yaml
-$ conda activate cancer
-```
+create a `conda` environment with python version 3.11 and use `pip install -r requirements.txt` to install the necessary packages. After that start jupyter lab by executing `jupyter lab` command.
 
 ## TPOT Settings
 
