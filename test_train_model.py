@@ -1,104 +1,54 @@
-import pandas as pd
-import json
-import joblib
 import os
-from sklearn.pipeline import Pipeline
+import pickle
+import pytest
+from train_model import pipeline, X_train, X_test, y_train, y_test  
 
-# Environment variables from CodeBuild or other environment settings
-MODEL_PATH = os.getenv('MODEL_PATH', 'cancer_detection_pipeline.pkl')  # Path to your saved model, set by CodeBuild environment
+@pytest.fixture(scope="module")
+def artifacts_path():
+    """Fixture to set up artifacts path"""
+    path = "artifacts"
+    os.makedirs(path, exist_ok=True)
+    yield path
+    # Clean up after the tests
+    for file in os.listdir(path):
+        file_path = os.path.join(path, file)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
 
-def load_model(model_path):
-    """
-    Function to load the trained model pipeline.
-    """
-    try:
-        model = joblib.load(model_path)
-        print("Model loaded successfully.")
-        return model
-    except Exception as e:
-        print(f"Error loading model: {e}")
-        raise
+@pytest.fixture
+def model_file_path(artifacts_path):
+    """Fixture to provide the model file path"""
+    return os.path.join(artifacts_path, "cancer_detection_pipeline.pkl")
 
-def prepare_input_data():
-    """
-    Function to prepare the sample input data.
-    """
-    input_data_json = '''{
-      "radius_mean": 14.0,
-      "texture_mean": 19.0,
-      "perimeter_mean": 90.0,
-      "area_mean": 500.0,
-      "smoothness_mean": 0.08,
-      "compactness_mean": 0.15,
-      "concavity_mean": 0.13,
-      "points_mean": 0.03,
-      "symmetry_mean": 0.18,
-      "dimension_mean": 0.06,
-      "radius_se": 0.4,
-      "texture_se": 1.2,
-      "perimeter_se": 2.5,
-      "area_se": 30.0,
-      "smoothness_se": 0.02,
-      "compactness_se": 0.04,
-      "concavity_se": 0.05,
-      "points_se": 0.01,
-      "symmetry_se": 0.03,
-      "dimension_se": 0.02,
-      "radius_worst": 18.0,
-      "texture_worst": 25.0,
-      "perimeter_worst": 120.0,
-      "area_worst": 800.0,
-      "smoothness_worst": 0.15,
-      "compactness_worst": 0.30,
-      "concavity_worst": 0.28,
-      "points_worst": 0.05,
-      "symmetry_worst": 0.22,
-      "dimension_worst": 0.09,
-      "Sex": "F"
-    }'''
+def test_model_training():
+    """Test if the model trains without errors"""
+    pipeline.fit(X_train, y_train)
+    train_accuracy = pipeline.score(X_train, y_train)
+    assert train_accuracy > 0.8, "Training accuracy is too low!"
 
-    # Convert JSON to a Python dictionary
-    input_data = json.loads(input_data_json)
+def test_model_saving(model_file_path):
+    """Test if the trained model is saved correctly"""
+    with open(model_file_path, "wb") as f:
+        pickle.dump(pipeline, f)
+    
+    assert os.path.exists(model_file_path), "Model file was not saved!"
 
-    # Convert dictionary to a pandas DataFrame
-    input_df = pd.DataFrame([input_data])
-    return input_df
+def test_model_loading(model_file_path):
+    """Test if the saved model can be loaded and used"""
+    with open(model_file_path, "wb") as f:
+        pickle.dump(pipeline, f)
 
-def run_prediction(model, input_data):
-    """
-    Function to run prediction on the input data.
-    """
-    try:
-        prediction = model.predict(input_data)
-        print("Prediction result:", prediction)
-        return prediction
-    except Exception as e:
-        print(f"Error during prediction: {e}")
-        raise
+    with open(model_file_path, "rb") as f:
+        loaded_model = pickle.load(f)
 
-def test_model():
-    """
-    The main test function to ensure the model is working properly.
-    """
-    try:
-        # Load the trained model
-        model = load_model(MODEL_PATH)
+    predictions = loaded_model.predict(X_test)
+    assert len(predictions) == len(y_test), "Prediction length mismatch!"
 
-        # Prepare sample input data
-        input_data = prepare_input_data()
-
-        # Run prediction
-        prediction = run_prediction(model, input_data)
-
-        # Validate the output (basic validation)
-        if prediction is not None:
-            print("Model prediction completed successfully.")
-        else:
-            print("Model prediction failed.")
-            raise ValueError("Prediction returned None.")
-    except Exception as e:
-        print(f"Test failed: {e}")
-        raise
+def test_model_prediction():
+    """Test if the model can predict on new data"""
+    sample_input = X_test[:1]  # Use a single sample
+    prediction = pipeline.predict(sample_input)
+    assert prediction[0] in ['Benign', 'Malignant'], f"Prediction '{prediction[0]}' is out of expected range!"
 
 if __name__ == '__main__':
-    test_model()
+    pytest.main()

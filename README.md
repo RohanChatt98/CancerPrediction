@@ -1,34 +1,53 @@
-1. Importing Libraries: The code begins by importing necessary libraries such as pandas for data manipulation, numpy for numerical operations, matplotlib.pyplot for plotting graphs, and various modules from scikit-learn for machine learning tasks.
+# Cancer Prediction Model
 
-2. Loading Data: The code loads the cancer data from a CSV file named "cancerdata.csv" into a pandas DataFrame named cancerdata.
+## Overview
 
-3. Data Preprocessing & EDA:
+The **Cancer Prediction** project aims to predict the likelihood of cancer (malignant or benign) in patients based on a variety of diagnostic features. Using machine learning algorithms, specifically a **Random Forest Classifier** model, the project trains a model on a dataset of features to classify whether a tumor is malignant or benign. The model is designed to be deployed in a continuous integration/continuous deployment (CI/CD) pipeline, ensuring a seamless workflow from training to testing and deployment.
 
-Converting the diagnosis column from 'B' to 'Benign' and from 'M' to 'Malignant'.
-Dropping the 'id' column.
-Printing information about the DataFrame using info() method.
-Describing the DataFrame using describe() method.
-Splitting Data: Splitting the DataFrame into features (cancerdata_X) and target (cancerdata_y).
+---
 
-4.Pipeline Creation:
+## Table of Contents
 
-Defining numeric and categorical features.
-Creating pipelines for numerical and categorical preprocessing.
-Combining the pipelines using ColumnTransformer to handle different types of features.
-Fitting and transforming the data using fit() and transform() methods.
-Scaling Features: Creating a pipeline to scale the features using MinMaxScaler().
+- [Project Description](#project-description)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Model Training](#model-training)
+- [Testing](#testing)
+- [CI/CD Pipeline](#cicd-pipeline)
+- [Technologies Used](#technologies-used)
+- [Contributing](#contributing)
+- [License](#license)
 
-Splitting Data into Train and Test Sets: Using train_test_split() function from scikit-learn to split the data into training and testing sets.
+---
 
-5. Model Training:
+## Project Description
 
-Iterating over different numbers of neighbors for KNN classifier.
-Training KNN classifiers for each number of neighbors.
-Calculating training and testing accuracies and storing them in a list.
-Plotting Accuracy: Plotting the training and testing accuracies against the number of neighbors.
+This project uses a dataset with various features extracted from medical images of tumors to predict if a tumor is **benign** or **malignant**. The dataset consists of several numeric attributes that describe the characteristics of the tumor, such as its size, shape, and texture. The project pipeline involves several stages:
 
-6. Model Evaluation:
+1. **Data Preprocessing**: Clean and prepare the dataset for training.
+2. **Model Training**: Train a machine learning model on the preprocessed data.
+3. **Model Evaluation**: Evaluate the model's performance using accuracy, precision, recall, and F1 score.
+4. **Model Saving**: Save the trained model for future inference and use.
+5. **Model Testing**: Verify the model's performance through unit tests.
 
-Training a random forest classifier with a chosen number of neighbors.
-Predicting the target labels for the test data.
+---
 
+## Features
+
+- **Data Preprocessing**: Cleans and prepares the data using normalization and encoding techniques.
+- **Model Training**: Trains the model using a **Random Forest Classifier**.
+- **Model Evaluation**: Evaluates model performance using standard metrics.
+- **Model Testing**: Verifies model prediction accuracy and saving/loading functionality.
+- **CI/CD Pipeline**: Continuous integration and deployment using AWS CodeBuild and GitHub for automating the training, testing, and deployment process.
+
+---
+
+## Installation
+
+To run this project locally, follow these steps:
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/CancerPrediction.git
+   cd CancerPrediction
