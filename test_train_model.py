@@ -50,5 +50,3 @@ def test_model_prediction():
     prediction = pipeline.predict(sample_input)
     assert prediction[0] in ['Benign', 'Malignant'], f"Prediction '{prediction[0]}' is out of expected range!"
 
-if __name__ == '__main__':
-    pytest.main()
