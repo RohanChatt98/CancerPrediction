@@ -29,7 +29,6 @@ Plotting Accuracy: Plotting the training and testing accuracies against the numb
 
 6. Model Evaluation:
 
-Training a KNN classifier with a chosen number of neighbors.
+Training a random forest classifier with a chosen number of neighbors.
 Predicting the target labels for the test data.
-Calculating accuracy using accuracy_score() function.
-Creating a confusion matrix using crosstab() function from pandas.
+

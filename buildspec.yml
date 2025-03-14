@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.10  # Change as per your requirements
+    commands:
+      - echo "Installing dependencies..."
+      - pip install -r requirements.txt
+  build:
+    commands:
+      - echo "Running tests..."
+      - python test_model.py
+  post_build:
+    commands:
+      - echo "Test completed"
+artifacts:
+  files:
+    - '**/*'
