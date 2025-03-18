@@ -28,7 +28,7 @@ source .venv/bin/activate
 echo "Installing dependencies..."
 python3 -m pip install -r requirements.txt
 
-# Start the Flask application with nohup
+# Start the  application with nohup
 echo "Starting application..."
 nohup python3 app.py > "$LOG_FILE" 2>&1 &
 
